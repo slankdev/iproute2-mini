@@ -1467,6 +1467,7 @@ static int bpf_fill_section_data(struct bpf_elf_ctx *ctx, int section,
 				 struct bpf_elf_sec_data *data)
 {
 	printf("SLANKDEV: %s\n", __func__);
+	// printf("SLANKDEV: %s call\n", __func__);
 	Elf_Data *sec_edata;
 	GElf_Shdr sec_hdr;
 	Elf_Scn *sec_fd;
@@ -1475,24 +1476,33 @@ static int bpf_fill_section_data(struct bpf_elf_ctx *ctx, int section,
 	memset(data, 0, sizeof(*data));
 
 	sec_fd = elf_getscn(ctx->elf_fd, section);
-	if (!sec_fd)
+	if (!sec_fd) {
+		// printf("SLANKDEV: %s ret (%d)\n", __func__, __LINE__);
 		return -EINVAL;
-	if (gelf_getshdr(sec_fd, &sec_hdr) != &sec_hdr)
+	}
+	if (gelf_getshdr(sec_fd, &sec_hdr) != &sec_hdr) {
+		// printf("SLANKDEV: %s ret (%d)\n", __func__, __LINE__);
 		return -EIO;
+	}
 
 	sec_name = elf_strptr(ctx->elf_fd, ctx->elf_hdr.e_shstrndx,
 			      sec_hdr.sh_name);
-	if (!sec_name || !sec_hdr.sh_size)
+	if (!sec_name || !sec_hdr.sh_size) {
+		// printf("SLANKDEV: %s ret (%d)\n", __func__, __LINE__);
 		return -ENOENT;
+	}
 
 	sec_edata = elf_getdata(sec_fd, NULL);
-	if (!sec_edata || elf_getdata(sec_fd, sec_edata))
+	if (!sec_edata || elf_getdata(sec_fd, sec_edata)) {
+		// printf("SLANKDEV: %s ret (%d)\n", __func__, __LINE__);
 		return -EIO;
+	}
 
 	memcpy(&data->sec_hdr, &sec_hdr, sizeof(sec_hdr));
 
 	data->sec_name = sec_name;
 	data->sec_data = sec_edata;
+	// printf("SLANKDEV: %s ret=0 (%d)\n", __func__, __LINE__);
 	return 0;
 }
 

@@ -154,58 +154,16 @@ handle_legacy_map_in_map(struct bpf_object *obj, struct bpf_map *inner_map,
 	return ret;
 }
 
-static int find_legacy_tail_calls(struct bpf_program *prog, struct bpf_object *obj,
-				  struct bpf_map **pmap)
-{
-  printf("SLANKDEV: %s call\n", __func__);
-	unsigned int map_id, key_id;
-	const char *sec_name;
-	struct bpf_map *map;
-	char map_name[128];
-	int ret;
-
-	/* Handle iproute2 tail call */
-	sec_name = get_bpf_program__section_name(prog);
-	ret = sscanf(sec_name, "%i/%i", &map_id, &key_id);
-	if (ret != 2) {
-		printf("SLANKDEV: %s ret=-1\n", __func__);
-		return -1;
-	}
-
-	ret = iproute2_find_map_name_by_id(map_id, map_name);
-	if (ret < 0) {
-		fprintf(stderr, "unable to find map id %u for tail call\n", map_id);
-		printf("SLANKDEV: %s ret=%d\n", __func__, ret);
-		return ret;
-	}
-
-	map = bpf_object__find_map_by_name(obj, map_name);
-	if (!map) {
-		printf("SLANKDEV: %s ret=%d\n", __func__, -1);
-		return -1;
-	}
-
-	if (pmap)
-		*pmap = map;
-
-	printf("SLANKDEV: %s ret=%d\n", __func__, 0);
-	return 0;
-}
-
 static int update_legacy_tail_call_maps(struct bpf_object *obj)
 {
   printf("SLANKDEV: %s\n", __func__);
-	int prog_fd, map_fd, ret = 0;
-	unsigned int map_id, key_id;
 	struct bpf_program *prog;
-	const char *sec_name;
-	struct bpf_map *map;
 
 	bpf_object__for_each_program(prog, obj) {
 		/* load_bpf_object has already verified find_legacy_tail_calls
 		 * succeeds when it should
 		 */
-		if (find_legacy_tail_calls(prog, obj, &map) < 0)
+		if (-1 < 0)
 			continue;
 	}
 
@@ -286,8 +244,7 @@ static int load_bpf_object(struct bpf_cfg_in *cfg)
 
 		/* Only load the programs that will either be subsequently
 		 * attached or inserted into a tail call map */
-		if (find_legacy_tail_calls(p, obj, NULL) < 0 &&
-		    !prog_to_attach) {
+		if (-1 < 0 && !prog_to_attach) {
 			ret = bpf_program__set_autoload(p, false);
 			if (ret)
 				return -EINVAL;

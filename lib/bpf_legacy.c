@@ -704,7 +704,7 @@ static int bpf_slave_via_bind_mnt(const char *full_name,
 static int bpf_gen_slave(const char *base, const char *name,
 			 const char *link)
 {
-	printf("SLANKDEV: %s\n", __func__);
+	printf("SLANKDEV: %s base=%s name=%s\n", __func__, base, name);
 	char bpf_lnk_dir[PATH_MAX + NAME_MAX + 1];
 	char bpf_sub_dir[PATH_MAX + NAME_MAX];
 	struct stat sb = {};
@@ -2223,12 +2223,14 @@ int iproute2_bpf_fetch_ancillary(void)
 
 int iproute2_get_root_path(char *root_path, size_t len)
 {
-	printf("SLANKDEV: %s\n", __func__);
+	// printf("SLANKDEV: %s root_path=%s\n", __func__, root_path);
 	struct bpf_elf_ctx *ctx = &__ctx;
 	int ret = 0;
 
 	snprintf(root_path, len, "%s/%s",
 		 bpf_get_work_dir(ctx->type), BPF_DIR_GLOBALS);
+
+	printf("SLANKDEV: %s root_path=%s\n", __func__, root_path);
 
 	ret = mkdir(root_path, S_IRWXU);
 	if (ret && errno != EEXIST) {

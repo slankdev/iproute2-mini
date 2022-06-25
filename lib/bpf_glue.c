@@ -9,9 +9,7 @@
 #include <unistd.h>
 
 #include "bpf_util.h"
-#ifdef HAVE_LIBBPF
 #include <bpf/bpf.h>
-#endif
 
 int bpf(int cmd, union bpf_attr *attr, unsigned int size)
 {
@@ -26,14 +24,9 @@ int bpf(int cmd, union bpf_attr *attr, unsigned int size)
 
 int bpf_program_attach(int prog_fd, int target_fd, enum bpf_attach_type type)
 {
-#ifdef HAVE_LIBBPF
 	return bpf_prog_attach(prog_fd, target_fd, type, 0);
-#else
-	return bpf_prog_attach_fd(prog_fd, target_fd, type);
-#endif
 }
 
-#ifdef HAVE_LIBBPF
 static const char *_libbpf_compile_version = LIBBPF_VERSION;
 static char _libbpf_version[10] = {};
 
@@ -82,9 +75,3 @@ out:
 	_libbpf_version[sizeof(_libbpf_version)-1] = '\0';
 	return _libbpf_version;
 }
-#else
-const char *get_libbpf_version(void)
-{
-	return NULL;
-}
-#endif /* HAVE_LIBBPF */

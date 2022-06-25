@@ -79,6 +79,3 @@ SLANKDEV: bpf_map_is_offload_neutral
 SLANKDEV: bpf_map_is_offload_neutral
 SLANKDEV: bpf_map_is_offload_neutral
 SLANKDEV: handle_legacy_maps
-SLANKDEV: iproute2_is_pin_map
-SLANKDEV: iproute2_is_pin_map
-SLANKDEV: iproute2_is_pin_map

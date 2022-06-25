@@ -51,39 +51,6 @@ static const char *get_bpf_program__section_name(const struct bpf_program *prog)
 	return ret;
 }
 
-static int handle_legacy_maps(struct bpf_object *obj)
-{
-  printf("SLANKDEV: %s\n", __func__);
-	char pathname[PATH_MAX];
-	struct bpf_map *map;
-	const char *map_name;
-	int map_fd, ret = 0;
-
-	bpf_object__for_each_map(map, obj) {
-		map_name = bpf_map__name(map);
-
-		ret = 0;
-		if (ret)
-			return ret;
-
-		/* If it is a iproute2 legacy pin maps, just set pin path
-		 * and let bpf_object__load() to deal with the map creation.
-		 * We need to ignore map-in-maps which have pinned maps manually
-		 */
-		map_fd = bpf_map__fd(map);
-		if (map_fd < 0 && false) {
-			ret = bpf_map__set_pin_path(map, pathname);
-			if (ret) {
-				fprintf(stderr, "map '%s': couldn't set pin path.\n", map_name);
-				break;
-			}
-		}
-
-	}
-
-	return ret;
-}
-
 static bool bpf_map_is_offload_neutral(const struct bpf_map *map)
 {
   printf("SLANKDEV: %s\n", __func__);
@@ -150,7 +117,7 @@ static int load_bpf_object(struct bpf_cfg_in *cfg)
 	}
 
 	/* Handle iproute2 legacy pin maps and map-in-maps */
-	ret = handle_legacy_maps(obj);
+	ret = 0;
 	if (ret)
 		goto unload_obj;
 

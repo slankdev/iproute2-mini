@@ -157,7 +157,7 @@ handle_legacy_map_in_map(struct bpf_object *obj, struct bpf_map *inner_map,
 static int find_legacy_tail_calls(struct bpf_program *prog, struct bpf_object *obj,
 				  struct bpf_map **pmap)
 {
-  printf("SLANKDEV: %s\n", __func__);
+  printf("SLANKDEV: %s call\n", __func__);
 	unsigned int map_id, key_id;
 	const char *sec_name;
 	struct bpf_map *map;
@@ -167,22 +167,28 @@ static int find_legacy_tail_calls(struct bpf_program *prog, struct bpf_object *o
 	/* Handle iproute2 tail call */
 	sec_name = get_bpf_program__section_name(prog);
 	ret = sscanf(sec_name, "%i/%i", &map_id, &key_id);
-	if (ret != 2)
+	if (ret != 2) {
+		printf("SLANKDEV: %s ret=-1\n", __func__);
 		return -1;
+	}
 
 	ret = iproute2_find_map_name_by_id(map_id, map_name);
 	if (ret < 0) {
 		fprintf(stderr, "unable to find map id %u for tail call\n", map_id);
+		printf("SLANKDEV: %s ret=%d\n", __func__, ret);
 		return ret;
 	}
 
 	map = bpf_object__find_map_by_name(obj, map_name);
-	if (!map)
+	if (!map) {
+		printf("SLANKDEV: %s ret=%d\n", __func__, -1);
 		return -1;
+	}
 
 	if (pmap)
 		*pmap = map;
 
+	printf("SLANKDEV: %s ret=%d\n", __func__, 0);
 	return 0;
 }
 
@@ -201,22 +207,6 @@ static int update_legacy_tail_call_maps(struct bpf_object *obj)
 		 */
 		if (find_legacy_tail_calls(prog, obj, &map) < 0)
 			continue;
-
-		prog_fd = bpf_program__fd(prog);
-		if (prog_fd < 0)
-			continue;
-
-		sec_name = get_bpf_program__section_name(prog);
-		ret = sscanf(sec_name, "%i/%i", &map_id, &key_id);
-		if (ret != 2)
-			continue;
-
-		map_fd = bpf_map__fd(map);
-		ret = bpf_map_update_elem(map_fd, &key_id, &prog_fd, 0);
-		if (ret < 0) {
-			fprintf(stderr, "Cannot update map key for tail call!\n");
-			return ret;
-		}
 	}
 
 	return 0;
@@ -263,7 +253,7 @@ static bool bpf_map_is_offload_neutral(const struct bpf_map *map)
 
 static int load_bpf_object(struct bpf_cfg_in *cfg)
 {
-  printf("SLANKDEV: %s\n", __func__);
+  printf("SLANKDEV: %s call\n", __func__);
 	struct bpf_program *p, *prog = NULL;
 	struct bpf_object *obj;
 	char root_path[PATH_MAX];
@@ -271,8 +261,10 @@ static int load_bpf_object(struct bpf_cfg_in *cfg)
 	int prog_fd, ret = 0;
 
 	ret = iproute2_get_root_path(root_path, PATH_MAX);
-	if (ret)
+	if (ret) {
+		printf("SLANKDEV: %s ret=%d (%d)\n", __func__, ret, __LINE__);
 		return ret;
+	}
 
 	DECLARE_LIBBPF_OPTS(bpf_object_open_opts, open_opts,
 			.relaxed_maps = true,
@@ -282,12 +274,15 @@ static int load_bpf_object(struct bpf_cfg_in *cfg)
 	obj = bpf_object__open_file(cfg->object, &open_opts);
 	if (libbpf_get_error(obj)) {
 		fprintf(stderr, "ERROR: opening BPF object file failed\n");
+		printf("SLANKDEV: %s ret=%d (%d)\n", __func__, -ENOENT, __LINE__);
 		return -ENOENT;
 	}
 
 	bpf_object__for_each_program(p, obj) {
 		bool prog_to_attach = !prog && cfg->section &&
 			!strcmp(get_bpf_program__section_name(p), cfg->section);
+		printf("SLANKDEV: %s prog_to_attach=%s\n", __func__,
+			prog_to_attach ? "true" : "false");
 
 		/* Only load the programs that will either be subsequently
 		 * attached or inserted into a tail call map */

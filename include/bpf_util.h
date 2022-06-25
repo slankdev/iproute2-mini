@@ -313,13 +313,11 @@ static inline int bpf_recv_map_fds(const char *path, int *fds,
 {
 	return -1;
 }
-#ifdef HAVE_LIBBPF
 static inline int iproute2_load_libbpf(struct bpf_cfg_in *cfg)
 {
 	fprintf(stderr, "No ELF library support compiled in.\n");
 	return -1;
 }
-#endif /* HAVE_LIBBPF */
 #endif /* HAVE_ELF */
 
 const char *get_libbpf_version(void);

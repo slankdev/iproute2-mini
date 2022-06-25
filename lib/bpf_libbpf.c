@@ -51,109 +51,6 @@ static const char *get_bpf_program__section_name(const struct bpf_program *prog)
 	return ret;
 }
 
-static int create_map(const char *name, struct bpf_elf_map *map,
-		      __u32 ifindex, int inner_fd)
-{
-  printf("SLANKDEV: %s\n", __func__);
-	union bpf_attr attr = {};
-
-	attr.map_type = map->type;
-	strlcpy(attr.map_name, name, sizeof(attr.map_name));
-	attr.map_flags = map->flags;
-	attr.key_size = map->size_key;
-	attr.value_size = map->size_value;
-	attr.max_entries = map->max_elem;
-	attr.map_ifindex = ifindex;
-	attr.inner_map_fd = inner_fd;
-
-	return bpf(BPF_MAP_CREATE, &attr, sizeof(attr));
-}
-
-static int create_map_in_map(struct bpf_object *obj, struct bpf_map *map,
-			     struct bpf_elf_map *elf_map, int inner_fd,
-			     bool *reuse_pin_map)
-{
-  printf("SLANKDEV: %s\n", __func__);
-	char pathname[PATH_MAX];
-	const char *map_name;
-	bool pin_map = false;
-	int map_fd, ret = 0;
-
-	map_name = bpf_map__name(map);
-
-	if (iproute2_is_pin_map(map_name, pathname)) {
-		pin_map = true;
-
-		/* Check if there already has a pinned map */
-		map_fd = bpf_obj_get(pathname);
-		if (map_fd > 0) {
-			if (reuse_pin_map)
-				*reuse_pin_map = true;
-			close(map_fd);
-			return bpf_map__set_pin_path(map, pathname);
-		}
-	}
-
-	map_fd = create_map(map_name, elf_map, bpf_map__ifindex(map), inner_fd);
-	if (map_fd < 0) {
-		fprintf(stderr, "create map %s failed\n", map_name);
-		return map_fd;
-	}
-
-	ret = bpf_map__reuse_fd(map, map_fd);
-	if (ret < 0) {
-		fprintf(stderr, "map %s reuse fd failed\n", map_name);
-		goto err_out;
-	}
-
-	if (pin_map) {
-		ret = bpf_map__set_pin_path(map, pathname);
-		if (ret < 0)
-			goto err_out;
-	}
-
-	return 0;
-err_out:
-	close(map_fd);
-	return ret;
-}
-
-static int
-handle_legacy_map_in_map(struct bpf_object *obj, struct bpf_map *inner_map,
-			 const char *inner_map_name)
-{
-  printf("SLANKDEV: %s\n", __func__);
-	int inner_fd, outer_fd, inner_idx, ret = 0;
-	struct bpf_elf_map imap, omap;
-	struct bpf_map *outer_map;
-	/* What's the size limit of map name? */
-	char outer_map_name[128];
-	bool reuse_pin_map = false;
-
-	/* Deal with map-in-map */
-	if (iproute2_is_map_in_map(inner_map_name, &imap, &omap, outer_map_name)) {
-		ret = create_map_in_map(obj, inner_map, &imap, -1, NULL);
-		if (ret < 0)
-			return ret;
-
-		inner_fd = bpf_map__fd(inner_map);
-		outer_map = bpf_object__find_map_by_name(obj, outer_map_name);
-		ret = create_map_in_map(obj, outer_map, &omap, inner_fd, &reuse_pin_map);
-		if (ret < 0)
-			return ret;
-
-		if (!reuse_pin_map) {
-			inner_idx = imap.inner_idx;
-			outer_fd = bpf_map__fd(outer_map);
-			ret = bpf_map_update_elem(outer_fd, &inner_idx, &inner_fd, 0);
-			if (ret < 0)
-				fprintf(stderr, "Cannot update inner_idx into outer_map\n");
-		}
-	}
-
-	return ret;
-}
-
 static int handle_legacy_maps(struct bpf_object *obj)
 {
   printf("SLANKDEV: %s\n", __func__);
@@ -165,7 +62,7 @@ static int handle_legacy_maps(struct bpf_object *obj)
 	bpf_object__for_each_map(map, obj) {
 		map_name = bpf_map__name(map);
 
-		ret = handle_legacy_map_in_map(obj, map, map_name);
+		ret = 0;
 		if (ret)
 			return ret;
 

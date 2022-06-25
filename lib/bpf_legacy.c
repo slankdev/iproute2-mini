@@ -23,10 +23,8 @@
 #include <limits.h>
 #include <assert.h>
 
-#ifdef HAVE_ELF
 #include <libelf.h>
 #include <gelf.h>
-#endif
 
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -1139,7 +1137,6 @@ int bpf_program_load(enum bpf_prog_type type, const struct bpf_insn *insns,
 	return bpf_prog_load_dev(type, insns, size_insns, license, 0, log, size_log);
 }
 
-#ifdef HAVE_ELF
 struct bpf_elf_prog {
 	enum bpf_prog_type	type;
 	struct bpf_insn		*insns;
@@ -2219,4 +2216,3 @@ int iproute2_find_map_name_by_id(unsigned int map_id, char *name)
 	memcpy(name, map_name, strlen(map_name) + 1);
 	return 0;
 }
-#endif /* HAVE_ELF */

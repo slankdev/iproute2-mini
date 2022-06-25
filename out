@@ -78,4 +78,3 @@ SLANKDEV: load_bpf_object prog_to_attach=false
 SLANKDEV: bpf_map_is_offload_neutral
 SLANKDEV: bpf_map_is_offload_neutral
 SLANKDEV: bpf_map_is_offload_neutral
-SLANKDEV: handle_legacy_maps

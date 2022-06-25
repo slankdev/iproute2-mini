@@ -71,7 +71,7 @@ static int handle_legacy_maps(struct bpf_object *obj)
 		 * We need to ignore map-in-maps which have pinned maps manually
 		 */
 		map_fd = bpf_map__fd(map);
-		if (map_fd < 0 && iproute2_is_pin_map(map_name, pathname)) {
+		if (map_fd < 0 && false) {
 			ret = bpf_map__set_pin_path(map, pathname);
 			if (ret) {
 				fprintf(stderr, "map '%s': couldn't set pin path.\n", map_name);

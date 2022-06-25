@@ -296,7 +296,6 @@ int bpf_recv_map_fds(const char *path, int *fds, struct bpf_map_aux *aux,
 int iproute2_bpf_elf_ctx_init(struct bpf_cfg_in *cfg);
 int iproute2_bpf_fetch_ancillary(void);
 int iproute2_get_root_path(char *root_path, size_t len);
-bool iproute2_is_pin_map(const char *libbpf_map_name, char *pathname);
 bool iproute2_is_map_in_map(const char *libbpf_map_name, struct bpf_elf_map *imap,
 			    struct bpf_elf_map *omap, char *omap_name);
 int iproute2_find_map_name_by_id(unsigned int map_id, char *name);

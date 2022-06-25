@@ -45,13 +45,8 @@ silent_print(enum libbpf_print_level level, const char *format, va_list args)
 
 static const char *get_bpf_program__section_name(const struct bpf_program *prog)
 {
-#ifdef HAVE_LIBBPF_SECTION_NAME
-  printf("SLANKDEV: %s HAVE_LIBBPF_SECTION_NAME\n", __func__);
+  printf("SLANKDEV: %s\n", __func__);
 	return bpf_program__section_name(prog);
-#else
-  printf("SLANKDEV: %s NOT HAVE_LIBBPF_SECTION_NAME\n", __func__);
-	return bpf_program__title(prog, false);
-#endif
 }
 
 static int create_map(const char *name, struct bpf_elf_map *map,

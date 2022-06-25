@@ -17,20 +17,20 @@ SLANKDEV: bpf_gen_master
 SLANKDEV: bpf_gen_global
 SLANKDEV: bpf_prog_to_subdir
 SLANKDEV: bpf_prog_to_subdir
-SLANKDEV: bpf_gen_slave
+SLANKDEV: bpf_gen_slave base=/sys/fs/bpf/ name=tc
 SLANKDEV: bpf_gen_global
 SLANKDEV: bpf_prog_to_subdir
 SLANKDEV: bpf_prog_to_subdir
-SLANKDEV: bpf_gen_slave
+SLANKDEV: bpf_gen_slave base=/sys/fs/bpf/ name=xdp
 SLANKDEV: bpf_prog_to_subdir
 SLANKDEV: bpf_prog_to_subdir
-SLANKDEV: bpf_gen_slave
+SLANKDEV: bpf_gen_slave base=/sys/fs/bpf/ name=ip
 SLANKDEV: bpf_prog_to_subdir
 SLANKDEV: bpf_prog_to_subdir
-SLANKDEV: bpf_gen_slave
+SLANKDEV: bpf_gen_slave base=/sys/fs/bpf/ name=ip
 SLANKDEV: bpf_prog_to_subdir
 SLANKDEV: bpf_prog_to_subdir
-SLANKDEV: bpf_gen_slave
+SLANKDEV: bpf_gen_slave base=/sys/fs/bpf/ name=ip
 SLANKDEV: bpf_get_cfg
 SLANKDEV: bpf_obj_hash
 SLANKDEV: bpf_elf_check_ehdr
@@ -68,15 +68,19 @@ SLANKDEV: bpf_fill_section_data
 SLANKDEV: bpf_fill_section_data
 SLANKDEV: bpf_fetch_symtab
 SLANKDEV: bpf_has_map_data
-SLANKDEV: load_bpf_object
-SLANKDEV: iproute2_get_root_path
+SLANKDEV: load_bpf_object call
 SLANKDEV: bpf_get_work_dir
 SLANKDEV: bpf_prog_to_subdir
-SLANKDEV: get_bpf_program__section_name
-SLANKDEV: find_legacy_tail_calls
-SLANKDEV: get_bpf_program__section_name
-SLANKDEV: find_legacy_tail_calls
-SLANKDEV: get_bpf_program__section_name
+SLANKDEV: iproute2_get_root_path root_path=/sys/fs/bpf/tc//globals
+SLANKDEV: get_bpf_program__section_name ret=tc-ingress
+SLANKDEV: load_bpf_object prog_to_attach=true
+SLANKDEV: find_legacy_tail_calls call
+SLANKDEV: get_bpf_program__section_name ret=tc-ingress
+SLANKDEV: find_legacy_tail_calls ret=-1
+SLANKDEV: load_bpf_object prog_to_attach=false
+SLANKDEV: find_legacy_tail_calls call
+SLANKDEV: get_bpf_program__section_name ret=tc-egress
+SLANKDEV: find_legacy_tail_calls ret=-1
 SLANKDEV: bpf_map_is_offload_neutral
 SLANKDEV: bpf_map_is_offload_neutral
 SLANKDEV: bpf_map_is_offload_neutral
@@ -91,7 +95,9 @@ SLANKDEV: handle_legacy_map_in_map
 SLANKDEV: iproute2_is_map_in_map
 SLANKDEV: iproute2_is_pin_map
 SLANKDEV: update_legacy_tail_call_maps
-SLANKDEV: find_legacy_tail_calls
-SLANKDEV: get_bpf_program__section_name
-SLANKDEV: find_legacy_tail_calls
-SLANKDEV: get_bpf_program__section_name
+SLANKDEV: find_legacy_tail_calls call
+SLANKDEV: get_bpf_program__section_name ret=tc-ingress
+SLANKDEV: find_legacy_tail_calls ret=-1
+SLANKDEV: find_legacy_tail_calls call
+SLANKDEV: get_bpf_program__section_name ret=tc-egress
+SLANKDEV: find_legacy_tail_calls ret=-1

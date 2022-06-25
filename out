@@ -88,4 +88,3 @@ SLANKDEV: iproute2_is_pin_map
 SLANKDEV: handle_legacy_map_in_map
 SLANKDEV: iproute2_is_map_in_map
 SLANKDEV: iproute2_is_pin_map
-SLANKDEV: update_legacy_tail_call_maps

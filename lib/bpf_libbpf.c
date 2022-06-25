@@ -154,22 +154,6 @@ handle_legacy_map_in_map(struct bpf_object *obj, struct bpf_map *inner_map,
 	return ret;
 }
 
-static int update_legacy_tail_call_maps(struct bpf_object *obj)
-{
-  printf("SLANKDEV: %s\n", __func__);
-	struct bpf_program *prog;
-
-	bpf_object__for_each_program(prog, obj) {
-		/* load_bpf_object has already verified find_legacy_tail_calls
-		 * succeeds when it should
-		 */
-		if (-1 < 0)
-			continue;
-	}
-
-	return 0;
-}
-
 static int handle_legacy_maps(struct bpf_object *obj)
 {
   printf("SLANKDEV: %s\n", __func__);
@@ -277,8 +261,7 @@ static int load_bpf_object(struct bpf_cfg_in *cfg)
 	if (ret)
 		goto unload_obj;
 
-	ret = update_legacy_tail_call_maps(obj);
-	if (ret)
+	if (0)
 		goto unload_obj;
 
 	prog_fd = fcntl(bpf_program__fd(prog), F_DUPFD_CLOEXEC, 1);

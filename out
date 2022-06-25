@@ -74,13 +74,7 @@ SLANKDEV: bpf_prog_to_subdir
 SLANKDEV: iproute2_get_root_path root_path=/sys/fs/bpf/tc//globals
 SLANKDEV: get_bpf_program__section_name ret=tc-ingress
 SLANKDEV: load_bpf_object prog_to_attach=true
-SLANKDEV: find_legacy_tail_calls call
-SLANKDEV: get_bpf_program__section_name ret=tc-ingress
-SLANKDEV: find_legacy_tail_calls ret=-1
 SLANKDEV: load_bpf_object prog_to_attach=false
-SLANKDEV: find_legacy_tail_calls call
-SLANKDEV: get_bpf_program__section_name ret=tc-egress
-SLANKDEV: find_legacy_tail_calls ret=-1
 SLANKDEV: bpf_map_is_offload_neutral
 SLANKDEV: bpf_map_is_offload_neutral
 SLANKDEV: bpf_map_is_offload_neutral
@@ -95,9 +89,3 @@ SLANKDEV: handle_legacy_map_in_map
 SLANKDEV: iproute2_is_map_in_map
 SLANKDEV: iproute2_is_pin_map
 SLANKDEV: update_legacy_tail_call_maps
-SLANKDEV: find_legacy_tail_calls call
-SLANKDEV: get_bpf_program__section_name ret=tc-ingress
-SLANKDEV: find_legacy_tail_calls ret=-1
-SLANKDEV: find_legacy_tail_calls call
-SLANKDEV: get_bpf_program__section_name ret=tc-egress
-SLANKDEV: find_legacy_tail_calls ret=-1

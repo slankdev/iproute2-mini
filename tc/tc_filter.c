@@ -205,6 +205,7 @@ static int tc_filter_modify(int cmd, unsigned int flags, int argc, char **argv)
 	}
 
 	if (q) {
+		printf("SLANKDEV: %s:%d:%s\n", __FILE__, __LINE__, __func__);
 		if (q->parse_fopt(q, fhandle, argc, argv, &req.n))
 			return 1;
 	} else {
@@ -552,6 +553,7 @@ static int tc_filter_get(int cmd, unsigned int flags, int argc, char **argv)
 		return -1;
 	}
 
+	printf("SLANKDEV: %s:%d:%s\n", __FILE__, __LINE__, __func__);
 	if (cmd == RTM_GETTFILTER &&
 	    q->parse_fopt(q, fhandle, argc, argv, &req.n))
 		return 1;

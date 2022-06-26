@@ -57,27 +57,21 @@ static void explain(void)
 		bpf_prog_to_default_section(bpf_type));
 }
 
-static void bpf_cbpf_cb(void *nl, const struct sock_filter *ops, int ops_len)
-{
-	addattr16(nl, MAX_MSG, TCA_BPF_OPS_LEN, ops_len);
-	addattr_l(nl, MAX_MSG, TCA_BPF_OPS, ops,
-		  ops_len * sizeof(struct sock_filter));
-}
-
 static void bpf_ebpf_cb(void *nl, int fd, const char *annotation)
 {
+	printf("SLANKDEV: %s\n", __func__);
 	addattr32(nl, MAX_MSG, TCA_BPF_FD, fd);
 	addattrstrz(nl, MAX_MSG, TCA_BPF_NAME, annotation);
 }
 
 static const struct bpf_cfg_ops bpf_cb_ops = {
-	.cbpf_cb = bpf_cbpf_cb,
 	.ebpf_cb = bpf_ebpf_cb,
 };
 
 static int bpf_parse_opt(struct filter_util *qu, char *handle,
 			 int argc, char **argv, struct nlmsghdr *n)
 {
+	printf("SLANKDEV: [[%s]]\n", __func__);
 	const char *bpf_obj = NULL, *bpf_uds_name = NULL;
 	struct tcmsg *t = NLMSG_DATA(n);
 	unsigned int bpf_gen_flags = 0;

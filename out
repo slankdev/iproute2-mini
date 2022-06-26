@@ -1,3 +1,5 @@
+SLANKDEV: tc_filter.c:208:tc_filter_modify
+SLANKDEV: [[bpf_parse_opt]]
 SLANKDEV: bpf_parse_common
 SLANKDEV: bpf_do_parse
 SLANKDEV: bpf_prog_to_default_section
@@ -73,8 +75,9 @@ SLANKDEV: bpf_get_work_dir
 SLANKDEV: bpf_prog_to_subdir
 SLANKDEV: iproute2_get_root_path root_path=/sys/fs/bpf/tc//globals
 SLANKDEV: get_bpf_program__section_name ret=tc-ingress
-SLANKDEV: load_bpf_object prog_to_attach=true
-SLANKDEV: load_bpf_object prog_to_attach=false
+SLANKDEV: get_bpf_program__section_name ret=tc-ingress
+SLANKDEV: load_bpf_object tc-ingress prog_to_attach=true type=3 ifindex=0
 SLANKDEV: bpf_map_is_offload_neutral
 SLANKDEV: bpf_map_is_offload_neutral
 SLANKDEV: bpf_map_is_offload_neutral
+SLANKDEV: bpf_ebpf_cb fd=10 annotation=filter.bpf.o:[tc-ingress]

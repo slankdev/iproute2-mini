@@ -59,7 +59,7 @@ static void explain(void)
 
 static void bpf_ebpf_cb(void *nl, int fd, const char *annotation)
 {
-	printf("SLANKDEV: %s\n", __func__);
+	printf("SLANKDEV: %s fd=%d annotation=%s\n", __func__, fd, annotation);
 	addattr32(nl, MAX_MSG, TCA_BPF_FD, fd);
 	addattrstrz(nl, MAX_MSG, TCA_BPF_NAME, annotation);
 }
